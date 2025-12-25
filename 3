@@ -1,0 +1,69 @@
+// Brainrot Tiers
+const brainrots = {
+    Common: ["Blip Blop", "Snaggle Snig", "Wobble Wibble", "Plop Plip", "Tizz Tazz", "Snib Snab"],
+    Rare: ["Krunk Krash", "Flarn Flib", "Chonk Chik", "Bloop Blap", "Mork Mirk"],
+    Legendary: ["Glib Glab", "Skrazz Skree", "Frizzle Frazzle", "Grunk Gribble", "Klunk Klap"],
+    OG: ["Tung Tung Tung Shuar", "Zing Zang Zong", "Wazzle Wuzzle Wump", "Shlur Shlur Shnar"]
+};
+
+// Player Base
+let playerBase = [];
+
+// Spawn Brainrot
+function spawnBrainrot(tier) {
+    // Unlock tiers logic
+    if (tier === "Rare" && !canUnlock("Rare")) {
+        alert("Collect 5 Common Brainrots to unlock Rare!");
+        return;
+    }
+    if (tier === "Legendary" && !canUnlock("Legendary")) {
+        alert("Collect 5 Rare Brainrots to unlock Legendary!");
+        return;
+    }
+    if (tier === "OG" && !canUnlock("OG")) {
+        alert("Collect 5 Legendary Brainrots to unlock OG!");
+        return;
+    }
+
+    let names = brainrots[tier];
+    let name = names[Math.floor(Math.random() * names.length)];
+    addToBase(name, tier);
+}
+
+// Add to Player Base
+function addToBase(name, tier) {
+    playerBase.push({name, tier});
+    updateBaseUI();
+}
+
+// Check if tier can be unlocked
+function canUnlock(tier) {
+    if (tier === "Rare") return countTier("Common") >= 5;
+    if (tier === "Legendary") return countTier("Rare") >= 5;
+    if (tier === "OG") return countTier("Legendary") >= 5;
+    return true;
+}
+
+// Count Brainrots in tier
+function countTier(tier) {
+    return playerBase.filter(b => b.tier === tier).length;
+}
+
+// Update UI
+function updateBaseUI() {
+    const list = document.getElementById("brainrotList");
+    list.innerHTML = "";
+    playerBase.forEach(b => {
+        let li = document.createElement("li");
+        li.textContent = `${b.name} (${b.tier})`;
+        list.appendChild(li);
+    });
+}
+
+// Admin Spawn OG
+function adminSpawnOG() {
+    let names = brainrots.OG;
+    let name = names[Math.floor(Math.random() * names.length)];
+    addToBase(name, "OG");
+    alert(`Admin spawned: ${name}`);
+}
